@@ -4,15 +4,28 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>SwiftyURLProtocol iOS.xcscheme</key>
+		<key>SwiftyURLProtocol iOS.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>1</integer>
 		</dict>
-		<key>SwiftyURLProtocol macOS.xcscheme</key>
+		<key>SwiftyURLProtocol macOS.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>CDE6114F1E79B599004B260F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CDE611581E79B59A004B260F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>
