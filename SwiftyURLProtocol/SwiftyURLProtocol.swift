@@ -27,7 +27,7 @@ import Foundation
 /// Types adopting the `Stopable` protocol can be used to provide objects, which activity can be stopped
 public protocol Stopable {
 
-    //Stops any activity
+    // Stops any activity
     func stop()
 }
 
@@ -71,7 +71,7 @@ open class SwiftyURLProtocol: URLProtocol {
         SwiftyURLProtocol.router = router
     }
 
-    override open class func canInit(with request: URLRequest) -> Bool {
+    open override class func canInit(with request: URLRequest) -> Bool {
         guard URLProtocol.property(forKey: swiftyURLProtocolPassHeader, in: request) == nil else { return false }
         return router?(request) != nil
     }
@@ -90,11 +90,11 @@ open class SwiftyURLProtocol: URLProtocol {
         super.init(request: request as URLRequest, cachedResponse: cachedResponse, client: client)
     }
 
-    override open class func canonicalRequest(for request: URLRequest) -> URLRequest {
+    open override class func canonicalRequest(for request: URLRequest) -> URLRequest {
         return request
     }
 
-    override open func startLoading() {
+    open override func startLoading() {
         guard let host = request.url?.host else {
             client?.urlProtocol(self, didFailWithError: NSError(domain: NSCocoaErrorDomain, code: -1, userInfo: nil))
             return
@@ -103,14 +103,14 @@ open class SwiftyURLProtocol: URLProtocol {
         guard let router = SwiftyURLProtocol.router else { return }
         guard let proxyType = router(request) else { return }
 
-        let closure: (Error?) -> Void = {[weak self] (error) -> Void in
+        let closure: (Error?) -> Void = { [weak self] (error) -> Void in
             guard let myself = self else { return }
 
             myself.probeTimer?.invalidate()
             myself.probeTimer = nil
 
             guard error == nil else {
-                myself.client?.urlProtocol(myself, didFailWithError: error! )
+                myself.client?.urlProtocol(myself, didFailWithError: error!)
                 return
             }
 
@@ -160,7 +160,7 @@ open class SwiftyURLProtocol: URLProtocol {
 
         let timeout = request.timeoutInterval > 20 ? request.timeoutInterval - 10 : 90
 
-        probeTimer = Timer(timeInterval: timeout, repeats: false) { [weak self] (_) in
+        probeTimer = Timer(timeInterval: Int(timeout), repeats: false) { [weak self] _ in
             guard let myself = self else { return }
 
             let error = NSError(domain: NSCocoaErrorDomain,
@@ -173,7 +173,7 @@ open class SwiftyURLProtocol: URLProtocol {
         }
     }
 
-    override open func stopLoading() {
+    open override func stopLoading() {
         probeTimer?.invalidate()
         probe?.stop()
         session?.invalidateAndCancel()
@@ -223,7 +223,7 @@ extension SwiftyURLProtocol: HTTPConnectionDelegate {
         // Stop our load.  The CFNetwork infrastructure will create a new NSURLProtocol instance to run
         // the load of the redirect.
 
-        // The following ends up calling -URLSession:task:didCompleteWithError: with 
+        // The following ends up calling -URLSession:task:didCompleteWithError: with
         // NSURLErrorDomain / NSURLErrorCancelled,
         // which specificallys traps and ignores the error.
 
@@ -235,7 +235,7 @@ extension SwiftyURLProtocol: HTTPConnectionDelegate {
 }
 
 extension SwiftyURLProtocol: URLSessionDelegate {
-    //NSURLSessionDelegate
+    // NSURLSessionDelegate
     func URLSession(_ session: Foundation.URLSession,
                     task: URLSessionTask,
                     willPerformHTTPRedirection response: HTTPURLResponse,
@@ -256,7 +256,7 @@ extension SwiftyURLProtocol: URLSessionDelegate {
         // Stop our load.  The CFNetwork infrastructure will create a new NSURLProtocol instance to run
         // the load of the redirect.
 
-        // The following ends up calling -URLSession:task:didCompleteWithError: with 
+        // The following ends up calling -URLSession:task:didCompleteWithError: with
         // NSURLErrorDomain / NSURLErrorCancelled,
         // which specificallys traps and ignores the error.
 
