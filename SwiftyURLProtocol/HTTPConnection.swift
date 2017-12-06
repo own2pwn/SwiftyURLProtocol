@@ -32,7 +32,8 @@ extension URLRequest {
 
         let result = CFHTTPMessageCreateRequest(nil,
                                                 httpMethod as CFString,
-                                                url as CFURL, kCFHTTPVersion1_1).takeRetainedValue()
+                                                url as CFURL,
+                                                kCFHTTPVersion1_1).takeRetainedValue()
 
         for header in allHTTPHeaderFields ?? [:] {
             CFHTTPMessageSetHeaderFieldValue(result,
@@ -129,7 +130,7 @@ class HTTPConnection: NSObject {
                                     CFStreamPropertyKey(rawValue: kCFStreamPropertySSLSettings),
                                     sslOptions as CFDictionary)
 
-            //TODO: SSL validation
+            // TODO: SSL validation
         }
     }
 
@@ -157,13 +158,12 @@ class HTTPConnection: NSObject {
             let httpProxyEnable = configuration.connectionProxyDictionary?[kCFNetworkProxiesHTTPEnable as AnyHashable]
                 as? Bool ?? false
 
-            if  proxyType == kCFProxyTypeHTTP as String || httpProxyEnable {
+            if proxyType == kCFProxyTypeHTTP as String || httpProxyEnable {
                 if let host = connectionProxyDictionary[kCFNetworkProxiesHTTPProxy as AnyHashable] as? String,
                     let port = connectionProxyDictionary[kCFNetworkProxiesHTTPPort as AnyHashable] as? Int {
                     let proxyDict = [host: port]
 
-                    CFReadStreamSetProperty(httpStream, CFStreamPropertyKey(kCFNetworkProxiesHTTPProxy
-                    ), proxyDict as CFDictionary)
+                    CFReadStreamSetProperty(httpStream, CFStreamPropertyKey(kCFNetworkProxiesHTTPProxy), proxyDict as CFDictionary)
                 }
             } else if proxyType == kCFProxyTypeSOCKS as String {
                 if let host = connectionProxyDictionary[kCFStreamPropertySOCKSProxyHost as AnyHashable] as? String,
@@ -205,7 +205,7 @@ extension HTTPConnection: StreamDelegate {
             let urlResponse = HTTPURLResponse(url: url, message: response as! CFHTTPMessage) {
             // swiftlint:enable force_cast
 
-            //TODO: Authentication
+            // TODO: Authentication
 
             // By reaching this point, the response was not a valid request for authentication,
             // so go ahead and report it
@@ -229,11 +229,11 @@ extension HTTPConnection: StreamDelegate {
         }
 
         // Next course of action depends on what happened to the stream
-        switch  eventCode {
-        case Stream.Event.errorOccurred:    // Report an error in the stream as the operation failing
+        switch eventCode {
+        case Stream.Event.errorOccurred: // Report an error in the stream as the operation failing
             delegate?.http(connection: self, didCompleteWithError: aStream.streamError)
 
-        case Stream.Event.endEncountered:   // Report the end of the stream to the delegate
+        case Stream.Event.endEncountered: // Report the end of the stream to the delegate
             delegate?.http(connection: self, didCompleteWithError: nil)
         case Stream.Event.hasBytesAvailable:
             guard let aStream = aStream as? InputStream else { return }
